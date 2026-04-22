@@ -1,6 +1,6 @@
 # How Context Ordering and Structure Shape Instruction Following in Large Language Models
 
-**Scott Daniel Ellis**  
+**Scott Ellis**  
 EN.705.743 – ChatGPT from Scratch
 Johns Hopkins University
 
