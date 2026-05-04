@@ -13,7 +13,7 @@ This project studies whether prompt topology—the ordering, grouping, and forma
 The repository includes:
 
 * a main script (`main.py`) for running the full pipeline end-to-end,
-    * an optional notebook (`Ellis-FinalProject-GPT.ipynb`) for interactive execution and exploration,
+    * an optional notebook (`Ellis-FinalProject.ipynb`) for interactive execution and exploration,
 * scripts for converting the IFEval and IFEval-FC datasets into a shared task format,
 * prompt topology utilities for building alternate prompt structures,
 * experiment code for running generations through Ollama,
@@ -42,7 +42,7 @@ This script is the recommended way to run the full pipeline, including data prep
 An interactive alternative is also provided:
 
 ```text
-Ellis-FinalProject-GPT.ipynb
+Ellis-FinalProject.ipynb
 ```
 
 The notebook mirrors the same workflow in a step-by-step format and can be used for exploration, debugging, or incremental execution.
@@ -51,7 +51,7 @@ The notebook mirrors the same workflow in a step-by-step format and can be used 
 
 ```text
 main.py
-Ellis-FinalProject-GPT.ipynb
+Ellis-FinalProject.ipynb
 data_processed/
     tasks_ifeval.jsonl
     tasks_ifeval_fc.jsonl
