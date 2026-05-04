@@ -12,66 +12,79 @@ This project studies whether prompt topology—the ordering, grouping, and forma
 
 The repository includes:
 
-- a notebook entry point for training and running the project,
-- scripts for converting the IFEval and IFEval-FC datasets into a shared task format,
-- prompt topology utilities for building alternate prompt structures,
-- experiment code for running generations through Ollama,
-- scoring code for JSON validity, schema adherence, and format adherence,
-- and analysis utilities for aggregating results into CSV summaries.
+* a main script (`main.py`) for running the full pipeline end-to-end,
+    * an optional notebook (`Ellis-FinalProject-GPT.ipynb`) for interactive execution and exploration,
+* scripts for converting the IFEval and IFEval-FC datasets into a shared task format,
+* prompt topology utilities for building alternate prompt structures,
+* experiment code for running generations through Ollama,
+* scoring code for JSON validity, schema adherence, and format adherence,
+* and analysis utilities for aggregating results into CSV summaries.
+
 
 The overall evaluation pipeline is consistent with the project goal and course expectations: convert tasks, run experiments, score outputs, and analyze results.
 
 ---
 
+Here’s a cleaner, more accurate version:
+
+---
+
 ## Entry Point
 
-The main entry point for this project is:
+The primary entry point for this project is:
+
+```text
+main.py
+```
+
+This script is the recommended way to run the full pipeline, including data preparation, experiment execution, evaluation, and visualization.
+
+An interactive alternative is also provided:
 
 ```text
 Ellis-FinalProject-GPT.ipynb
 ```
 
-This notebook should be treated as the primary place to run the project. It is the intended top-level workflow for training the model, preparing data, running experiments, and viewing outputs.
-
----
+The notebook mirrors the same workflow in a step-by-step format and can be used for exploration, debugging, or incremental execution.
 
 ## Repository Structure
 
 ```text
-📄 Ellis-FinalProject-GPT.ipynb
-📁 data_processed/
-    📄 tasks_ifeval.jsonl
-    📄 tasks_ifeval_fc.jsonl
-📁 data_raw/
-    📄 ifeval-fc_input_data.parquet
-    📄 ifeval-fc_README.md
-    📄 ifeval_input_data.jsonl
-    📄 ifeval_README.md
-📁 hftokenizer/
-    📄 merges.txt
-    📄 special_tokens_map.json
-    📄 tokenizer.json
-    📄 tokenizer_config.json
-    📄 vocab.json
-📁 runs/
-    📄 combined_model_summary_ifeval_and_fc.csv
-    📄 combined_model_topology_ifeval_and_fc.csv
-    📄 combined_scores_ifeval_and_fc.csv
-    📄 combined_topology_summary_ifeval_and_fc.csv
-📁 src/
-    📄 analysis_tools.py
-    📄 analyze.py
-    📄 convert_ifeval.py
-    📄 convert_ifeval_fc.py
-    📄 experiment.py
-    📄 gpt.py
-    📄 hftokenizer.py
-    📄 prompt_topologies.py
-    📄 run_ollama.py
-    📄 sampler.py
-    📄 score.py
-    📄 score_fc_checkers.py
-    📄 train_model.py
+main.py
+Ellis-FinalProject-GPT.ipynb
+data_processed/
+    tasks_ifeval.jsonl
+    tasks_ifeval_fc.jsonl
+data_raw/
+    ifeval-fc_input_data.parquet
+    ifeval-fc_README.md
+    ifeval_input_data.jsonl
+    ifeval_README.md
+hftokenizer/
+    merges.txt
+    special_tokens_map.json
+    tokenizer.json
+    tokenizer_config.json
+    vocab.json
+runs/
+    combined_model_summary_ifeval_and_fc.csv
+    combined_model_topology_ifeval_and_fc.csv
+    combined_scores_ifeval_and_fc.csv
+    combined_topology_summary_ifeval_and_fc.csv
+src/
+    analysis_tools.py
+    analyze.py
+    convert_ifeval.py
+    convert_ifeval_fc.py
+    experiment.py
+    gpt.py
+    hftokenizer.py
+    prompt_topologies.py
+    run_ollama.py
+    sampler.py
+    score.py
+    score_fc_checkers.py
+    train_model.py
 ```
 
 ---
@@ -130,7 +143,7 @@ That endpoint is hard-coded in both `src/run_ollama.py` and `src/experiment.py`,
 Open and run:
 
 ```text
-Ellis-FinalProject-GPT.ipynb
+python main.py
 ```
 
 That notebook should be used as the top-level driver for the project.
@@ -139,20 +152,19 @@ A typical run sequence is:
 
 1. Set up the Python environment.
 2. Start Ollama locally.
-3. Open the notebook.
-4. Run the cells that prepare data, train the model, and/or launch evaluation.
-5. Inspect outputs written under `runs/` and any combined CSV summary files.
+3. Run `main.py` to execute the full pipeline.
+5. Inspect outputs written under `runs/` including CSV summaries and saved visualizations.
 
 ## Prompt Topologies Implemented
 
 The project evaluates six topology variants:
 
-- `C_E_T` — Constraints → Examples → Task
-- `E_C_T` — Examples → Constraints → Task
-- `T_C_E` — Task → Constraints → Examples
-- `Cdelim_E_T` — Delimited-bullets Constraints → Examples → Task
-- `Cinterleave_T` — Constraints interleaved with Examples → Task
-- `C_E_T_C` — Constraints → Examples → Task → Constraints repeated
+- `C_E_T` — Constraints > Examples > Task
+- `E_C_T` — Examples > Constraints > Task
+- `T_C_E` — Task > Constraints > Examples
+- `Cdelim_E_T` — Delimited-bullets Constraints > Examples > Task
+- `Cinterleave_T` — Constraints interleaved with Examples > Task
+- `C_E_T_C` — Constraints > Examples > Task > Constraints repeated
 
 These are defined in `src/prompt_topologies.py`. For IFEval-FC tasks, the prompt builder also appends a strong JSON-only reminder at the end of the prompt.
 
@@ -160,14 +172,14 @@ These are defined in `src/prompt_topologies.py`. For IFEval-FC tasks, the prompt
 
 ## Output Files
 
-The project produces several important outputs.
+Running `main.py` generates several outputs:
 
 ### Processed task files
 
 Located in `data_processed/`:
 
-- `tasks_ifeval.jsonl`
-- `tasks_ifeval_fc.jsonl`
+* `tasks_ifeval.jsonl`
+* `tasks_ifeval_fc.jsonl`
 
 These are the normalized task inputs used for experimentation.
 
@@ -175,23 +187,39 @@ These are the normalized task inputs used for experimentation.
 
 Located in `runs/<run_id>/`:
 
-- `raw.jsonl` — raw prompts, model responses, parameters, and metadata
-- `scores.csv` — scored evaluation results for each task/topology/repeat/model combination
+* `raw.jsonl` — raw prompts, model responses, parameters, and metadata
+* `scores.csv` — scored evaluation results for each task/topology/repeat/model combination
+
+These are created automatically during experiment execution.
 
 ### Summary outputs
 
-Produced by analysis scripts:
+Generated during the analysis stage of `main.py`:
 
-- `summary_model_topology.csv`
-- `summary_topology.csv`
-- `summary_dataset_tasktype.csv`
+* `summary_model_topology.csv`
+* `summary_topology.csv`
+* `summary_dataset_tasktype.csv`
 
-Your repository also contains combined summary files such as:
+The script also produces combined summaries across datasets:
 
-- `combined_model_summary_ifeval_and_fc.csv`
-- `combined_model_topology_ifeval_and_fc.csv`
-- `combined_scores_ifeval_and_fc.csv`
-- `combined_topology_summary_ifeval_and_fc.csv`
+* `combined_model_summary_ifeval_and_fc.csv`
+* `combined_model_topology_ifeval_and_fc.csv`
+* `combined_scores_ifeval_and_fc.csv`
+* `combined_topology_summary_ifeval_and_fc.csv`
+
+All summary files are written to the `runs/` directory.
+
+### Visualizations
+
+Saved to `runs/` as image files:
+
+* `ifeval_pass_rate_heatmap.png`
+* `ifeval_fc_pass_rate_heatmap.png`
+
+These plots visualize model performance across prompt topologies for both datasets.
+
+---
+
 
 ---
 
@@ -240,9 +268,16 @@ Notebook-friendly analysis helpers for loading and summarizing runs.
 
 ## Acknowledgments / Data Sources
 
-This project uses the following benchmark families:
+This project uses the following benchmark datasets:
 
-- **IFEval** for general instruction-following evaluation
-- **IFEval-FC** for stricter function-calling / format-constrained evaluation
+* **[IFEval](https://huggingface.co/datasets/google/IFEval)** for general instruction-following evaluation
+* **[IFEval-FC](https://huggingface.co/datasets/NikolaiSkripko/IFEval-FC)** for stricter function-calling / format-constrained evaluation
 
-These datasets were also identified in the project proposal and later project writeup as the two main evaluation sources.
+The following models were used:
+
+* **[Qwen3:8B](https://huggingface.co/Qwen/Qwen3-8B)**
+* **[Llama 3.2:3B](https://huggingface.co/meta-llama/Llama-3.2-3B)**
+* **[Gemma 3:12B](https://huggingface.co/google/gemma-3-12b-it)**
+* **[GPT-OSS:20B](https://huggingface.co/openai/gpt-oss-20b)**
+
+---
